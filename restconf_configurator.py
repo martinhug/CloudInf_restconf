@@ -29,12 +29,23 @@ def init_logger():
     ch.setFormatter(formatter)
     _logger.addHandler(ch)
 
-def patch_new_interface_to_host(host, xml_payload):
+
+def patch_interface_config(host, xml_payload):
     url = f'https://{host["connection_address"]}/restconf/data/Cisco-IOS-XE-native:native/interface/'
 
     response = requests.patch(url, auth=(host['username'], host['password']), data=xml_payload, headers=HEADERS, verify=False)
 
     return response
+
+def patch_ospf_config(host, xml_payload):
+    url = f'https://{host["connection_address"]}/restconf/data/Cisco-IOS-XE-native:native/router/ospf/'
+
+    response = requests.patch(url, auth=(host['username'], host['password']), data=xml_payload, headers=HEADERS, verify=False)
+
+    return response
+
+
+
 
 def get_xml(filename):
     with open(filename) as xml_data:
@@ -47,7 +58,7 @@ def main():
     for device in devices:
         logger.info(f'Configuring Interfaces for device {device}')
         router_config_payload = get_xml("router_interfaces_config.xml")
-        response_interface = patch_new_interface_to_host(device, router_config_payload)
+        response_interface = patch_interface_config(device, router_config_payload)
         print(response_interface)
 
 if __name__ == '__main__':
