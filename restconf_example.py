@@ -1,3 +1,4 @@
+
 import logging
 from typing import List
 
@@ -5,6 +6,7 @@ import requests
 import yaml
 
 import restconf_helpers
+
 
 requests.packages.urllib3.disable_warnings()
 
@@ -33,9 +35,30 @@ def get_interfaces(host: dict) -> str:
         password=host['password'])
     return response
 
-
 def print_interfaces(host: dict) -> None:
     print(get_interfaces(host=host))
+
+def get_bgpconfig(host: dict) -> str:
+    response = restconf_helpers.RestconfRequestHelper().get(
+        url=f'https://{host["connection_address"]}/restconf/data/Cisco-IOS-XE-native:native/router/bgp/',
+        username=host['username'],
+        password=host['password'])
+    return response
+
+def print_bpg(host: dict) -> None:
+    print(get_bgpconfig(host=host))
+
+
+def get_ospfconfig(host: dict) -> str:
+    response = restconf_helpers.RestconfRequestHelper().get(
+        url=f'https://{host["connection_address"]}/restconf/data/Cisco-IOS-XE-native:native/router/ospf/',
+        username=host['username'],
+        password=host['password'])
+    return response
+
+def print_ospf(host: dict) -> None:
+    print(get_ospfconfig(host=host))
+
 
 
 def main():
@@ -43,6 +66,8 @@ def main():
     for device in devices:
         logger.info(f'Getting information for device {device}')
         print_interfaces(host=device)
+        print_bpg(host=device)
+        print_ospf(host=device)
 
 
 if __name__ == '__main__':

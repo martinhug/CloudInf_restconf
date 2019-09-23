@@ -1,0 +1,80 @@
+<interface xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"  xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+  <GigabitEthernet>
+    <name>1</name>
+    <description>RESTful API Interface</description>
+    <ip>
+    <address>
+    <primary>
+      <address>10.3.255.102</address>
+      <mask>255.255.255.0</mask>
+    </primary>
+  </address>
+</ip>
+<mop>
+  <enabled>false</enabled>
+</mop>
+<negotiation xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ethernet">
+  <auto>true</auto>
+</negotiation>
+</GigabitEthernet>
+<Loopback>
+  <name>0</name>
+  <description>Loopback fuer Routing</description>
+  <ip>
+  <address>
+  <primary>
+    <address>192.168.2.1</address>
+    <mask>255.255.255.0</mask>
+  </primary>
+</address>
+</ip>
+</Loopback>
+<Loopback>
+  <name>1</name>
+  <description>Loopback fuer BGP</description>
+  <ip>
+  <address>
+  <primary>
+    <address>2.2.2.2</address>
+    <mask>255.255.255.255</mask>
+  </primary>
+</address>
+</ip>
+</Loopback>
+</interface>
+
+<ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf"  xmlns:ios-ospf="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf"  xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+  <id>1</id>
+  <network>
+    <ip>2.2.2.2</ip>
+    <mask>0.0.0.0</mask>
+    <area>0</area>
+  </network>
+  <network>
+    <ip>10.3.255.0</ip>
+    <mask>0.0.0.255</mask>
+    <area>0</area>
+  </network>
+  <network>
+    <ip>192.168.2.0</ip>
+    <mask>0.0.0.255</mask>
+    <area>0</area>
+  </network>
+</ospf>
+
+<bgp xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bgp"  xmlns:ios-bgp="http://cisco.com/ns/yang/Cisco-IOS-XE-bgp"  xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+  <id>2</id>
+  <neighbor>
+    <id>20.20.20.20</id>
+    <remote-as>20</remote-as>
+    <ebgp-multihop>
+      <max-hop>2</max-hop>
+    </ebgp-multihop>
+    <update-source>
+      <Loopback>1</Loopback>
+    </update-source>
+  </neighbor>
+</bgp>
+
+
+
