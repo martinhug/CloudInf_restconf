@@ -15,6 +15,7 @@ HEADERS = {
     'Accept': 'application/yang-data+xml'
 }
 
+
 def load_devices() -> List[dict]:
     with open('device_infos.yaml', 'r') as host_file:
         hosts = yaml.load(host_file.read(), Loader=yaml.FullLoader)
@@ -33,18 +34,19 @@ def init_logger():
 def patch_interface_config(host, xml_payload):
     url = f'https://{host["connection_address"]}/restconf/data/Cisco-IOS-XE-native:native/interface/'
 
-    response = requests.patch(url, auth=(host['username'], host['password']), data=xml_payload, headers=HEADERS, verify=False)
+    response = requests.patch(url, auth=(host['username'], host['password']), data=xml_payload, headers=HEADERS,
+                              verify=False)
 
     return response
+
 
 def patch_ospf_config(host, xml_payload):
     url = f'https://{host["connection_address"]}/restconf/data/Cisco-IOS-XE-native:native/router/ospf/'
 
-    response = requests.patch(url, auth=(host['username'], host['password']), data=xml_payload, headers=HEADERS, verify=False)
+    response = requests.patch(url, auth=(host['username'], host['password']), data=xml_payload, headers=HEADERS,
+                              verify=False)
 
     return response
-
-
 
 
 def get_xml(filename):
@@ -53,13 +55,16 @@ def get_xml(filename):
 
     return xml_payload
 
+
 def main():
     devices = load_devices()
     for device in devices:
         logger.info(f'Configuring Interfaces for device {device}')
-        router_config_payload = get_xml("router_interfaces_config.xml")
-        response_interface = patch_interface_config(device, router_config_payload)
+        response_interface = patch_interface_config(device, get_xml("router_interface_config.xml"))
         print(response_interface)
+        response_ospf = patch_ospf_config(device, get_xml("router_ospf_config.xml"))
+        print(response_ospf)
+
 
 if __name__ == '__main__':
     init_logger()
