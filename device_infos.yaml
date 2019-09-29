@@ -1,47 +1,9 @@
 - username: python
   password: cisco
   connection_address: 10.3.255.102
-- username: python
-  password: cisco
-  connection address: 10.3.255.103
-  configsteps:
-    - interfaces:
-      url: interface xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"  xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native"
+  connection_mask: 255.255.255.0
 
-        - type: Loopback
-          nr: 0
-          description: Loopback fuer OSPF
-          address: 192.168.2.1
-          mask: 255.255.255.0
 
-        - type: Loopback
-          nr: 1
-          description: Loopback fuer BGP
-          address: 2.2.2.2
-          mask: 255.255.255.255
-    - ospf:
-      url: ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf"  xmlns:ios-ospf="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf"  xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native"
-
-        - id: 1
-
-            - ip: 2.2.2.2
-              mask: 0.0.0.0
-              area: 0
-            - ip: 2.2.2.2
-              mask: 0.0.0.0
-              area: 0
-            - ip: 2.2.2.2
-              mask: 0.0.0.0
-              area: 0
-    - bgp:
-        url: bgp xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bgp"  xmlns:ios-bgp="http://cisco.com/ns/yang/Cisco-IOS-XE-bgp"  xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native"
-
-          - id: 2
-
-              -id: 20.20.20.20
-                remote-as: 20
-                max-hop: 2
-                update-source: 1
 
 
 
