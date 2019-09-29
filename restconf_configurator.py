@@ -4,20 +4,11 @@ from typing import List
 import requests
 import yaml
 
+from jinja2 import Environment, FileSystemLoader
+
 requests.packages.urllib3.disable_warnings()
 
-logger = logging.getLogger('restconf.example')
-
-HEADERS = {
-    'Content-Type': 'application/yang-data+xml',
-    'Accept': 'application/yang-data+xml'
-}
-
-
-def load_yaml(filename) -> List[dict]:
-    with open(filename , 'r') as host_file:
-        hosts = yaml.load(host_file.read(), Loader=yaml.FullLoader)
-        return hosts
+logger = logging.getLogger('restconf.configurator')
 
 
 def init_logger():
@@ -28,88 +19,61 @@ def init_logger():
     ch.setFormatter(formatter)
     _logger.addHandler(ch)
 
-from jinja2 import Environment, FileSystemLoader
+
+HEADERS = {
+    'Content-Type': 'application/yang-data+xml',
+    'Accept': 'application/yang-data+xml'
+}
 
 
-def load_template():
-    # Load Jinja2 template
+def load_yaml(filename) -> List[dict]:
+    with open(filename, 'r') as host_file:
+        hosts = yaml.load(host_file.read(), Loader=yaml.FullLoader)
+        return hosts
+
+
+def load_template(xml_template):
     env = Environment(loader=FileSystemLoader('./'), trim_blocks=True, lstrip_blocks=True)
-    template = env.get_template('router_config.xml')
-    print(template)
+    template = env.get_template(xml_template)
     return template
 
-def render_template(template, hosts):
-    template.render(hosts)
-    print(hosts)
 
-
-
-
-def patch_interface_config(host, xml_payload):
-    url = f'https://{host["connection_address"]}/restconf/data/Cisco-IOS-XE-native:native/interface/'
-
-    response = requests.patch(url, auth=(host['username'], host['password']), data=xml_payload, headers=HEADERS,
+def patch_config(host, xml_payload, url):
+    response = requests.patch(url.format(device=host["connection_address"]), auth=(host['username'], host['password']),
+                              data=xml_payload, headers=HEADERS,
                               verify=False)
 
     return response
-
-
-def patch_ospf_config(host, xml_payload):
-    url = f'https://{host["connection_address"]}/restconf/data/Cisco-IOS-XE-native:native/router/ospf/'
-
-    response = requests.patch(url, auth=(host['username'], host['password']), data=xml_payload, headers=HEADERS,
-                              verify=False)
-
-    return response
-
-
-def patch_bgp_config(host, xml_payload):
-    url = f'https://{host["connection_address"]}/restconf/data/Cisco-IOS-XE-native:native/router/bgp/'
-
-    response = requests.patch(url, auth=(host['username'], host['password']), data=xml_payload, headers=HEADERS,
-                              verify=False)
-
-    return response
-
-
-def get_xml(filename):
-    with open(filename) as xml_data:
-        xml_payload = xml_data.read()
-
-    return xml_payload
 
 
 def main():
-    print("Load Device Infos")
-    devices = load_yaml('device_infos.yaml')
-    for device in devices:
-        logger.info('Getting information for device {device')
-        print(device['username'])
-        template = load_template()
-        template.render(device[''])
-        render_template(template, device)
-        print(template.stream().dump('hello.html'))
+    devices = load_yaml('parameter_device.yaml')
+    urls = load_yaml('parameter_restconf_URLs.yaml')
 
+    logger.info(f'Start to Configure device:  {devices["connection_address"]}')
 
-    loopback = load_yaml('loopback_infos.yaml')
-    print(loopback)
-    ospf = load_yaml('ospf_infos.yaml')
-    print(ospf)
-    bgp = load_yaml('bgp_infos.yaml')
-    print(bgp)
-    # template = load_template()
-    # template.render()
-    # render_template(template, devices)
-    # # for device in devices:
-    #     logger.info(f'Configuring Interfaces for device {device["connection_address"]}')
-    #     response_interface = patch_interface_config(device, get_xml("router_interface_config.xml"))
-    #     print(response_interface)
-    #     logger.info(f'Configuring OSPF for device {device["connection_address"]}')
-    #     response_ospf = patch_ospf_config(device, get_xml("router_ospf_config.xml"))
-    #     print(response_ospf)
-    #     logger.info(f'Configuring BGP for device {device["connection_address"]}')
-    #     response_bgp = patch_bgp_config(device, get_xml("router_bgp_config.xml"))
-    #     print(response_bgp)
+    logger.info(f'Configuring Loopbacks...')
+    loopback = load_yaml('parameter_loopback.yaml')
+    for loop in loopback:
+        template = load_template('jinja_template_interfaces.xml')
+        response_interface = patch_config(devices, template.render(loop), urls['interface'])
+        logger.info('Loopbacks finished Result: ' + response_interface.__str__())
+
+    logger.info('Configuring OSPF... ')
+    ospf = load_yaml('parameter_ospf.yaml')
+    for network in ospf:
+        template = load_template('jinja_template_ospf.xml')
+        response_ospf = patch_config(devices, template.render(network), urls['ospf'])
+        logger.info('OSPF finished Result: ' + response_ospf.__str__())
+
+    logger.info('Configuring BGP... ')
+    bgp_config = load_yaml('parameter_bgp.yaml')
+    for neighbor in bgp_config:
+        template = load_template('jinja_template_bgp.xml')
+        response_bgp = patch_config(devices, template.render(neighbor), urls['bgp'])
+        logger.info('BGP finished Result: ' + response_bgp.__str__())
+
+    logger.info('Configuration completed')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,6 @@
+- loopback0_description: Loopback fuer OSPF
+  loopback0_address: 192.168.2.1
+  loopback0_mask: 255.255.255.0
+  loopback1_description: Loopback fuer BGP
+  loopback1_address: 2.2.2.2
+  loopback1_mask: 255.255.255.255

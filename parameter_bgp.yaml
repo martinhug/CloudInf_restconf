@@ -1,4 +1,4 @@
-- id: 20.20.20.20
+- neighbor_id: 20.20.20.20
   remote_as: 20
   max_hop: 2
   update_source: 1

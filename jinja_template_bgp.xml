@@ -1,0 +1,17 @@
+<bgp xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bgp" xmlns:ios-bgp="http://cisco.com/ns/yang/Cisco-IOS-XE-bgp"
+     xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+<id>2</id>
+<neighbor>
+    <id>{{neighbor_id}}</id>
+    <remote-as>{{remote_as}}</remote-as>
+    <ebgp-multihop>
+        <max-hop>{{max_hop}}</max-hop>
+    </ebgp-multihop>
+    <update-source>
+        <Loopback>{{update_source}}</Loopback>
+    </update-source>
+</neighbor>
+</bgp>
+
+
+

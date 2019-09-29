@@ -1,4 +1,3 @@
-
 import logging
 from typing import List
 
@@ -7,14 +6,13 @@ import yaml
 
 import restconf_helpers
 
-
 requests.packages.urllib3.disable_warnings()
 
 logger = logging.getLogger('restconf.example')
 
 
 def load_devices() -> List[dict]:
-    with open('device_infos.yaml', 'r') as host_file:
+    with open('parameter_device.yaml', 'r') as host_file:
         hosts = yaml.load(host_file.read(), Loader=yaml.FullLoader)
         return hosts
 
@@ -35,8 +33,10 @@ def get_interfaces(host: dict) -> str:
         password=host['password'])
     return response
 
+
 def print_interfaces(host: dict) -> None:
     print(get_interfaces(host=host))
+
 
 def get_bgpconfig(host: dict) -> str:
     response = restconf_helpers.RestconfRequestHelper().get(
@@ -44,6 +44,7 @@ def get_bgpconfig(host: dict) -> str:
         username=host['username'],
         password=host['password'])
     return response
+
 
 def print_bpg(host: dict) -> None:
     print(get_bgpconfig(host=host))
@@ -56,18 +57,18 @@ def get_ospfconfig(host: dict) -> str:
         password=host['password'])
     return response
 
+
 def print_ospf(host: dict) -> None:
     print(get_ospfconfig(host=host))
 
 
-
 def main():
     devices = load_devices()
-    for device in devices:
-        logger.info(f'Getting information for device {device}')
-        print_interfaces(host=device)
-        print_bpg(host=device)
-        print_ospf(host=device)
+
+    logger.info(f'Getting information for device {devices}')
+    print_interfaces(host=devices)
+    print_bpg(host=devices)
+    print_ospf(host=devices)
 
 
 if __name__ == '__main__':

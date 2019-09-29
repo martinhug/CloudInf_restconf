@@ -1,0 +1,10 @@
+interface: https://{device}/restconf/data/Cisco-IOS-XE-native:native/interface/
+ospf: https://{device}/restconf/data/Cisco-IOS-XE-native:native/router/ospf/
+bgp: https://{device}/restconf/data/Cisco-IOS-XE-native:native/router/bgp/
+
+
+
+
+
+
+

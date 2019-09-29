@@ -1,8 +1,0 @@
-- nr: 0
-  description: Loopback fuer OSPF
-  address: 192.168.2.1
-  mask: 255.255.255.0
-- nr: 1
-  address: 2.2.2.2
-  description: Loopback fuer BGP
-  mask: 255.255.255.255

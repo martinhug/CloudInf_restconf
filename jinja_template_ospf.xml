@@ -1,0 +1,8 @@
+<ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf"  xmlns:ios-ospf="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf"  xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+  <id>1</id>
+  <network>
+    <ip>{{ip}}</ip>
+    <mask>{{mask}}</mask>
+    <area>{{area}}</area>
+  </network>
+</ospf>

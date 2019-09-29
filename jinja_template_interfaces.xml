@@ -1,0 +1,27 @@
+<interface xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native"
+           xmlns:ios="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+    <Loopback>
+        <name>0</name>
+        <description>{{loopback0_description}}</description>
+        <ip>
+            <address>
+                <primary>
+                    <address>{{loopback0_address}}</address>
+                    <mask>{{loopback0_mask}}</mask>
+                </primary>
+            </address>
+        </ip>
+    </Loopback>
+    <Loopback>
+        <name>1</name>
+        <description>{{loopback1_description}}</description>
+        <ip>
+            <address>
+                <primary>
+                    <address>{{loopback1_address}}</address>
+                    <mask>{{loopback1_mask}}</mask>
+                </primary>
+            </address>
+        </ip>
+    </Loopback>
+</interface>
