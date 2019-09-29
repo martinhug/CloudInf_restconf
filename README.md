@@ -17,5 +17,3 @@ Start the program:
 ## Jinja & YAML
 To configure the router, we use Yaml files to provide the individual parameters for the config. The script creates XML templates with jinja, which are used to upload to the router.
 
-## File responsibility
-
